@@ -26,6 +26,9 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.lang.Nullable;
 
 /**
+ * ApplicationContext的基础实现类,支持多次调用refresh()方法,
+ * 每次调用refresh()都会创建一个新bean factory实例.
+ *
  * Base class for {@link org.springframework.context.ApplicationContext}
  * implementations which are supposed to support multiple calls to {@link #refresh()},
  * creating a new internal bean factory instance every time.

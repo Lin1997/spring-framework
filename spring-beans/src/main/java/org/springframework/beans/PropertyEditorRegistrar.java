@@ -17,6 +17,9 @@
 package org.springframework.beans;
 
 /**
+ * PropertyEditor更多信息:
+ * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-beans-conversion
+ * <p>
  * Interface for strategies that register custom
  * {@link java.beans.PropertyEditor property editors} with a
  * {@link org.springframework.beans.PropertyEditorRegistry property editor registry}.

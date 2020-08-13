@@ -17,9 +17,15 @@
 package org.springframework.core.env;
 
 /**
+ * "Standard"的Environment对象:StandardEnvironment
+ * 注意"Standard"指非WEB应用(standalone applications),
+ * 详情看下面链接对应小节的Note部分:
+ * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-property-source-abstraction
+ * <p>
  * {@link Environment} implementation suitable for use in 'standard' (i.e. non-web)
  * applications.
  *
+ * 除了ConfigurableEnvironment的常用操作,改类还配置了两个默认property源: 系统属性(JVM) 和 系统环境变量.
  * <p>In addition to the usual functions of a {@link ConfigurableEnvironment} such as
  * property resolution and profile-related operations, this implementation configures two
  * default property sources, to be searched in the following order:

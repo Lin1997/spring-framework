@@ -19,12 +19,18 @@ package org.springframework.core.env;
 import java.util.Map;
 
 /**
+ * Environment、ConfigurablePropertyResolver的结合体:
+ * Environment: 设置profile为active、设置默认profile、操作property源
+ * ConfigurablePropertyResolver: 验证required的属性、自定义conversion service等
  * Configuration interface to be implemented by most if not all {@link Environment} types.
  * Provides facilities for setting active and default profiles and manipulating underlying
  * property sources. Allows clients to set and validate required properties, customize the
  * conversion service and more through the {@link ConfigurablePropertyResolver}
  * superinterface.
  *
+ * 操作property源的方法:
+ * 通过{@link #getPropertySources()}返回的{@link MutablePropertySources}对象进行操作.
+ * 下面给出了几个Example.
  * <h2>Manipulating property sources</h2>
  * <p>Property sources may be removed, reordered, or replaced; and additional
  * property sources may be added using the {@link MutablePropertySources}

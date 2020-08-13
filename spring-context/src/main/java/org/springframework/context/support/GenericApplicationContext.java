@@ -40,6 +40,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 通用的ApplicationContext实现类,内部维护单例的DefaultListableBeanFactory,
+ * 且并不指定具体的bean definition格式.
+ * 通过实现BeanDefinitionRegistry接口来允许使用任意的bean definition reader.
+ * <p>
  * Generic ApplicationContext implementation that holds a single internal
  * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}
  * instance and does not assume a specific bean definition format. Implements
@@ -54,6 +58,10 @@ import org.springframework.util.Assert;
  * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors},
  * etc).
  *
+ * 与其他ApplicationContext的实现类不同,它们允许多次调用refresh(),每次创建一个新BeanFactory实例,
+ * 而本类的内部BeanFactory从容器启动开始就初始化好,
+ * 然后允许向其注册若干bean definition.
+ * 注意: refresh()接口只允许被调用一次,通过refreshBeanFactory()里的CAS操作来保证.
  * <p>In contrast to other ApplicationContext implementations that create a new
  * internal BeanFactory instance for each refresh, the internal BeanFactory of
  * this context is available right from the start, to be able to register bean
@@ -256,6 +264,9 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	//---------------------------------------------------------------------
 
 	/**
+	 * 什么都不做(容器维护了单BeanFactory实例).
+	 * 注意: 这里通过CAS保证了refresh操作只能执行一次
+	 *
 	 * Do nothing: We hold a single internal BeanFactory and rely on callers
 	 * to register beans through our public methods (or the BeanFactory's).
 	 * @see #registerBeanDefinition

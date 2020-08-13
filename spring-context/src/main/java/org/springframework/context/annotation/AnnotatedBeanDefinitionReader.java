@@ -34,6 +34,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 在BeanFactory或ApplicationContext的已注册类中，通过扫描类并解析annotation，识别bean candidates，
+ * 并将它们作为BeanDefinition注册到BeanFactory或ApplicationContext.
+ *
  * Convenient adapter for programmatic registration of bean classes.
  *
  * <p>This is an alternative to {@link ClassPathBeanDefinitionScanner}, applying

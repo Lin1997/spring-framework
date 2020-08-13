@@ -36,6 +36,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
 
 /**
+ * 在classpath中，通过扫描类并解析annotation，识别bean candidates，
+ * 并将它们作为BeanDefinition注册到BeanFactory或ApplicationContext.
+ *
  * A bean definition scanner that detects bean candidates on the classpath,
  * registering corresponding bean definitions with a given registry ({@code BeanFactory}
  * or {@code ApplicationContext}).

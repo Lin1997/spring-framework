@@ -17,11 +17,15 @@
 package org.springframework.core.env;
 
 /**
+ * 该接口是应用运行环境的抽象，包括 profile(配置文件) 和 property(属性)
  * Interface representing the environment in which the current application is running.
  * Models two key aspects of the application environment: <em>profiles</em> and
  * <em>properties</em>. Methods related to property access are exposed via the
  * {@link PropertyResolver} superinterface.
  *
+ * profile是一个命名了的bean definition逻辑组,只有当指定的profile是active状态,改组bean definition才会注册到容器.
+ * Environment对象决定了哪些profile是active的(通过{@linkplain #getActiveProfiles}),
+ * 以及哪些profile应该默认active(通过{@linkplain #getDefaultProfiles}).
  * <p>A <em>profile</em> is a named, logical group of bean definitions to be registered
  * with the container only if the given profile is <em>active</em>. Beans may be assigned
  * to a profile whether defined in XML or via annotations; see the spring-beans 3.1 schema
@@ -31,6 +35,9 @@ package org.springframework.core.env;
  * active}, and which profiles (if any) should be {@linkplain #getDefaultProfiles active
  * by default}.
  *
+ * property即属性.
+ * property source(property来源): 配置文件、JVM系统属性、系统环境变量、JNDI、Servlet上下文参数，临时属性对象，Map对象等.
+ * Environment对象提供了方便的接口供用户配置property源, 以及从这些源解析property.
  * <p><em>Properties</em> play an important role in almost all applications, and may
  * originate from a variety of sources: properties files, JVM system properties, system
  * environment variables, JNDI, servlet context parameters, ad-hoc Properties objects,

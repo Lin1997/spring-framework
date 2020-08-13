@@ -17,6 +17,9 @@
 package org.springframework.beans.factory;
 
 /**
+ * 更多信息:
+ * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#aware-list
+ *
  * A marker superinterface indicating that a bean is eligible to be notified by the
  * Spring container of a particular framework object through a callback-style method.
  * The actual method signature is determined by individual subinterfaces but should

@@ -26,6 +26,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 详情见:
+ * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#aop-aj-ltw
+ *
  * {@link org.springframework.beans.factory.config.BeanPostProcessor}
  * implementation that passes the context's default {@link LoadTimeWeaver}
  * to beans that implement the {@link LoadTimeWeaverAware} interface.
