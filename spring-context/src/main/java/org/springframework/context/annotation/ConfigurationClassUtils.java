@@ -47,6 +47,8 @@ import org.springframework.stereotype.Component;
  */
 abstract class ConfigurationClassUtils {
 
+	// CONFIGURATION_CLASS_FULL与CONFIGURATION_CLASS_LITE的含义见:
+	// https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java-basic-concepts
 	private static final String CONFIGURATION_CLASS_FULL = "full";
 
 	private static final String CONFIGURATION_CLASS_LITE = "lite";
@@ -71,6 +73,8 @@ abstract class ConfigurationClassUtils {
 
 
 	/**
+	 * 检查给定的bean definition是否是一个configuration类,
+	 * (或者是configuration/component类的内部component类)
 	 * Check whether the given bean definition is a candidate for a configuration class
 	 * (or a nested component class declared within a configuration/component class,
 	 * to be auto-registered as well), and mark it accordingly.

@@ -61,6 +61,9 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
+	 * 注意,此构造函数调用了registerAnnotationConfigProcessors,
+	 * 向容器注册了若干用于处理注解的post-processor.
+	 *
 	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry.
 	 * <p>If the registry is {@link EnvironmentCapable}, e.g. is an {@code ApplicationContext},
 	 * the {@link Environment} will be inherited, otherwise a new
@@ -75,6 +78,9 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
+	 * 注意,此构造函数调用了registerAnnotationConfigProcessors,
+	 * 向容器注册了若干用于处理注解的post-processor.
+	 *
 	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry,
 	 * using the given {@link Environment}.
 	 * @param registry the {@code BeanFactory} to load bean definitions into,

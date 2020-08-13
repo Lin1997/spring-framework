@@ -17,6 +17,9 @@
 package org.springframework.context.annotation;
 
 /**
+ * 详情见:
+ * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-factory-scopes-other-injection
+ *
  * Enumerates the various scoped-proxy options.
  *
  * <p>For a more complete discussion of exactly what a scoped proxy is, see the

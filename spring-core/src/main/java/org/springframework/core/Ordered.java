@@ -17,6 +17,8 @@
 package org.springframework.core;
 
 /**
+ * 实现该接口代表该对象可被排序, getOrder()返回值描述了该对象优先级(越小优先级越高).
+ * <p>
  * {@code Ordered} is an interface that can be implemented by objects that
  * should be <em>orderable</em>, for example in a {@code Collection}.
  *

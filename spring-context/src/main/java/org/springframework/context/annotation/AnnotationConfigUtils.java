@@ -138,6 +138,9 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	/**
+	 * 将所有与annotation相关的BeanFactoryPostProcessor及BeanPostProcessor
+	 * 注册到给定的注册中心(容器).
+	 * <p>
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
 	 * @param source the configuration source element (already extracted)

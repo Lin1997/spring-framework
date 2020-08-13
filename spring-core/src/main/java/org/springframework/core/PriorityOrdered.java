@@ -17,6 +17,8 @@
 package org.springframework.core;
 
 /**
+ * Ordered接口的扩展,代表(更)优先的顺序: PriorityOrdered总是先于Ordered处理，无论他们的order为多少.
+ * <p>
  * Extension of the {@link Ordered} interface, expressing a <em>priority</em>
  * ordering: {@code PriorityOrdered} objects are always applied before
  * <em>plain</em> {@link Ordered} objects regardless of their order values.

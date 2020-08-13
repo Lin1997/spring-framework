@@ -537,9 +537,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareBeanFactory(beanFactory);
 
 			try {
+				// 在完成了beanFactory标准特性的初始化后,此处可以对beanFactory进行一些修改(post-processing),
+				// 比如注册一些ApplicationContext特有的BeanPostProcessor等.
+				// 注意,此时所有的bean definition都已载入,但还没有实例化这些bean.
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
+				// 实例化已注册的BeanFactoryPostProcessor bean(即以bean形式注册到容器的那些BeanFactoryPostProcessor),
+				// 并回调其接口.
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -718,6 +723,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 在完成了beanFactory标准特性的初始化后,此处可以对beanFactory进行一些修改(post-processing),
+	 * 比如注册一些ApplicationContext特有的BeanPostProcessor.
+	 * 注意,此时所有的bean definition都已载入,但还没有实例化这些bean.
+	 * <p>
 	 * Modify the application context's internal bean factory after its standard
 	 * initialization. All bean definitions will have been loaded, but no beans
 	 * will have been instantiated yet. This allows for registering special
@@ -728,11 +737,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 实例化已注册的BeanFactoryPostProcessor bean(即以bean形式注册到容器的那些BeanFactoryPostProcessor),
+	 * 并回调其接口.
+	 * 如果有显示指定顺序,则按指定顺序来.
+	 * <p>
 	 * Instantiate and invoke all registered BeanFactoryPostProcessor beans,
 	 * respecting explicit order if given.
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 注意:getBeanFactoryPostProcessors()拿到的是当前已实例化的BeanFactoryPostProcessor
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

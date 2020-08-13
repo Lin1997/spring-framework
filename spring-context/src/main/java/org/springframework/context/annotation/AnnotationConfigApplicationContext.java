@@ -67,6 +67,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		//	用于在已注册类中，通过扫描类并解析annotation，识别bean candidates，
 		//	并将它们作为BeanDefinition注册到this(ApplicationContext)
+		//	注意,此构造函数调用了registerAnnotationConfigProcessors,
+		//	向容器注册了若干用于处理注解的post-processor.
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		//	用于在classpath中，通过扫描类并解析annotation，识别bean candidates，
 		//	并将它们作为BeanDefinition注册到this(ApplicationContext)
