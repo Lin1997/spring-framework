@@ -216,13 +216,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
-				beforeSingletonCreation(beanName);
+				beforeSingletonCreation(beanName);	// 标记单例Bean当前正在被创建
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
 				if (recordSuppressedExceptions) {
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 回调ObjectFactory的方法,创建Bean实例,
+					// 因为是工厂方法,所以可以在创建过程中做很多额外的处理:如:AbstractBeanFactory#createBean(...)
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -337,6 +339,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 默认的实现是: 标记单例Bean当前正在被创建
+	 *
 	 * Callback before singleton creation.
 	 * <p>The default implementation register the singleton as currently in creation.
 	 * @param beanName the name of the singleton about to be created

@@ -238,6 +238,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
+	 * 对Configuration类进行CGLIB动态代理增强,也即替换成"CGLIB增强子类"
 	 * Prepare the Configuration classes for servicing bean requests at runtime
 	 * by replacing them with CGLIB-enhanced subclasses.
 	 */
@@ -325,11 +326,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);	// 深拷贝去重
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size()); // 已解析的类
 		do {
-			parser.parse(candidates);
+			parser.parse(candidates);	// 在这里进行解析
 			parser.validate();
 
-			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
-			configClasses.removeAll(alreadyParsed);
+			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());	// 去重
+			configClasses.removeAll(alreadyParsed);	// 排除以解析类
 
 			// Read the model and create bean definitions based on its content
 			if (this.reader == null) {
@@ -375,13 +376,17 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
+	 * 扫描BeanFactory，遍历Configuration类的BeanDefinition,
+	 * 根据Configuration是Full模式还是Lite模式 (详见ConfigurationClassUtils#isFullConfigurationClass(...)注解),
+	 * 决定是否使用ConfigurationClassEnhancer类对其进行CGLIB动态代理增强
+	 *
 	 * Post-processes a BeanFactory in search of Configuration class BeanDefinitions;
 	 * any candidates are then enhanced by a {@link ConfigurationClassEnhancer}.
 	 * Candidate status is determined by BeanDefinition attribute metadata.
 	 * @see ConfigurationClassEnhancer
 	 */
 	public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFactory) {
-		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
+		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>(); // 存放需要增强的Configuration类的BeanDefinition
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef)) {
@@ -412,13 +417,13 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				// Set enhanced subclass of the user-specified bean class
 				Class<?> configClass = beanDef.resolveBeanClass(this.beanClassLoader);
 				if (configClass != null) {
-					Class<?> enhancedClass = enhancer.enhance(configClass, this.beanClassLoader);
+					Class<?> enhancedClass = enhancer.enhance(configClass, this.beanClassLoader); // 这里生成了增强类
 					if (configClass != enhancedClass) {
 						if (logger.isTraceEnabled()) {
 							logger.trace(String.format("Replacing bean definition '%s' existing class '%s' with " +
 									"enhanced class '%s'", entry.getKey(), configClass.getName(), enhancedClass.getName()));
 						}
-						beanDef.setBeanClass(enhancedClass);
+						beanDef.setBeanClass(enhancedClass);	// BeanDefinition设为增强类
 					}
 				}
 			}

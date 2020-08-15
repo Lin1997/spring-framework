@@ -47,6 +47,9 @@ import org.springframework.lang.Nullable;
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**
+	 * 典型的应用是动态代理,替换成代理对象;以及EventListenerProcessor.
+	 * 注意看@return, 当想替换bean对象时,返回替换的对象;返回null则不替换.
+	 *
 	 * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>.
 	 * The returned bean object may be a proxy to use instead of the target bean,
 	 * effectively suppressing default instantiation of the target bean.
@@ -76,6 +79,10 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
+	 * 注意看@return,返回true则告诉容器正常执行属性注入;
+	 * 返回false则告诉容器跳过后面的属性注入以及InstantiationAwareBeanPostProcessor的回调处理.
+	 * 因此正常情况下应返回true.
+	 *
 	 * Perform operations after the bean has been instantiated, via a constructor or factory method,
 	 * but before Spring property population (from explicit properties or autowiring) occurs.
 	 * <p>This is the ideal callback for performing custom field injection on the given bean

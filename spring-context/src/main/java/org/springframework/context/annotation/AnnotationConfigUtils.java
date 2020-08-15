@@ -233,10 +233,12 @@ public abstract class AnnotationConfigUtils {
 		}
 	}
 
+	// 处理common(普通?)注解，如:@Lazy、@Primary、@DependsOn、@Role、@Description
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}
 
+	// 处理common(普通?)注解，如:@Lazy、@Primary、@DependsOn、@Role、@Description
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
 		if (lazy != null) {
@@ -267,6 +269,7 @@ public abstract class AnnotationConfigUtils {
 		}
 	}
 
+	// 根据元数据的scopedProxyMode值决定是否需要创建ScopedProxy
 	static BeanDefinitionHolder applyScopedProxyMode(
 			ScopeMetadata metadata, BeanDefinitionHolder definition, BeanDefinitionRegistry registry) {
 

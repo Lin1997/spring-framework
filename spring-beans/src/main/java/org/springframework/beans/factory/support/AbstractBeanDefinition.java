@@ -1077,6 +1077,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * method override的处理详见:
+	 * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-factory-method-injection
+	 *
 	 * Validate and prepare the method overrides defined for this bean.
 	 * Checks for existence of a method with the specified name.
 	 * @throws BeanDefinitionValidationException in case of validation failure

@@ -11,4 +11,33 @@ public class MyTest {
 		ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 		System.out.println(context.getBean(TestComponent.class));
 	}
+
+	public MyTest() {
+		super();
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+	}
 }

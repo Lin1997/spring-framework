@@ -116,6 +116,10 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		//	根据注解信息决定该configuration类是full还是lite模式:
+		// https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java-basic-concepts
+		// 然后将该属性设置到Bean Definition中,从而也表明了该configuration类已经被处理过:
+		// 见ConfigurationClassPostProcessor#processConfigBeanDefinitions(...)
 		if (isFullConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
@@ -191,6 +195,9 @@ abstract class ConfigurationClassUtils {
 	}
 
 	/**
+	 * CONFIGURATION_CLASS_FULL与CONFIGURATION_CLASS_LITE的含义见:
+	 * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java-basic-concepts
+	 *
 	 * Determine whether the given bean definition indicates a full {@code @Configuration}
 	 * class, through checking {@link #checkConfigurationClassCandidate}'s metadata marker.
 	 */
@@ -199,6 +206,9 @@ abstract class ConfigurationClassUtils {
 	}
 
 	/**
+	 * CONFIGURATION_CLASS_FULL与CONFIGURATION_CLASS_LITE的含义见:
+	 * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java-basic-concepts
+	 *
 	 * Determine whether the given bean definition indicates a lite {@code @Configuration}
 	 * class, through checking {@link #checkConfigurationClassCandidate}'s metadata marker.
 	 */

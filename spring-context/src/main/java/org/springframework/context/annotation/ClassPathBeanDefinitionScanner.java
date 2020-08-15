@@ -280,16 +280,19 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);	// 扫描并返该路径下的component的BeanDefinition
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
-				candidate.setScope(scopeMetadata.getScopeName());
-				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+				candidate.setScope(scopeMetadata.getScopeName());	// 重设Scope
+				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);	// 生成beanName
 				if (candidate instanceof AbstractBeanDefinition) {
+					// 设置lazyInit、autowireMode、initMethodName属性
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
-				if (candidate instanceof AnnotatedBeanDefinition) {
+				if (candidate instanceof AnnotatedBeanDefinition) {	// 若带了注解,还需要再处理注解
+					// 处理common(普通?)注解，如:@Lazy、@Primary、@DependsOn、@Role、@Description
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
-				if (checkCandidate(beanName, candidate)) {
+				if (checkCandidate(beanName, candidate)) {	// 检查给定的beanName与beanDefinition与当前容器已有的是否冲突
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
+					// 根据元数据的scopedProxyMode值决定是否需要创建ScopedProxy
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
@@ -301,6 +304,8 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
+	 * 对传入的bean definition进行一些component scan时还没完成的设置,如:
+	 * lazyInit、autowireMode、initMethodName等.
 	 * Apply further settings to the given bean definition,
 	 * beyond the contents retrieved from scanning the component class.
 	 * @param beanDefinition the scanned bean definition
@@ -326,6 +331,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 
 	/**
+	 * 检查给定的beanName与beanDefinition与当前容器已有的是否冲突.
 	 * Check the given candidate's bean name, determining whether the corresponding
 	 * bean definition needs to be registered or conflicts with an existing definition.
 	 * @param beanName the suggested name for the bean

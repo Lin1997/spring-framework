@@ -182,6 +182,8 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 在所有@Configuration bean完成处理后,再处理DeferredImportSelector接口.
+		// 详情见该接口注释.
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -284,6 +286,7 @@ class ConfigurationClassParser {
 		if (!componentScans.isEmpty() &&
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
+				// 执行扫描并将扫描到的BeanDefinition注册到容器.
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
@@ -293,6 +296,7 @@ class ConfigurationClassParser {
 					if (bdCand == null) {
 						bdCand = holder.getBeanDefinition();
 					}
+					// 如果扫描到的是一个configuration类,则需递归解析
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
 					}
@@ -321,6 +325,7 @@ class ConfigurationClassParser {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
+		// @Bean支持Java 8的default method,详见函数注释
 		// Process default methods on interfaces
 		processInterfaces(configClass, sourceClass);
 
@@ -372,6 +377,9 @@ class ConfigurationClassParser {
 	}
 
 	/**
+	 * 详见以下小节note部分:
+	 * https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-factorybeans-annotations
+	 * <p>
 	 * Register default methods on interfaces implemented by the configuration class.
 	 */
 	private void processInterfaces(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
@@ -542,6 +550,7 @@ class ConfigurationClassParser {
 		}
 	}
 
+	// 分情况处理@Import注解: Import的是ImportSelector、ImportBeanDefinitionRegistrar、还是普通类
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, boolean checkForCircularImports) {
 
