@@ -22,7 +22,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.AliasRegistry;
 
 /**
- * 该接口代表了存放bean definition的注册中心.
+ * 该接口代表了存放bean definition的注册中心,担当bean definition注册管理的角色
  * <p>
  * Interface for registries that hold bean definitions, for example RootBeanDefinition
  * and ChildBeanDefinition instances. Typically implemented by BeanFactories that
