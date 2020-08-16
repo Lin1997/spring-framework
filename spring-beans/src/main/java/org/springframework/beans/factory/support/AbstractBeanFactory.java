@@ -299,7 +299,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
-				// 正如@DependsOn语义那样,需先处理当前bean dependsOn的bean
+				// 正如@DependsOn语义那样,需先处理当前bean dependsOn的其它bean
 				// Guarantee initialization of beans that the current bean depends on.
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
@@ -1427,7 +1427,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		ClassLoader beanClassLoader = getBeanClassLoader();
 		ClassLoader dynamicLoader = beanClassLoader;
-		boolean freshResolve = false;
+		boolean freshResolve = false;	// 标志着这个类是新解解析出来的,需要使用ClassLoader加载.
 
 		if (!ObjectUtils.isEmpty(typesToMatch)) {
 			// When just doing type checks (i.e. not creating an actual instance yet),
@@ -1447,7 +1447,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		String className = mbd.getBeanClassName();
 		if (className != null) {
-			Object evaluated = evaluateBeanDefinitionString(className, mbd);
+			Object evaluated = evaluateBeanDefinitionString(className, mbd);	// className可能是个EL表达式,解析一下.
 			if (!className.equals(evaluated)) {
 				// A dynamically resolved expression, supported as of 4.2...
 				if (evaluated instanceof Class) {

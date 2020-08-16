@@ -125,7 +125,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		LifecycleMetadata metadata = findLifecycleMetadata(beanType);
+		LifecycleMetadata metadata = findLifecycleMetadata(beanType);	// 找到bean生命周期相关的元数据:@PostConstruct和@PreDestroy
 		metadata.checkConfigMembers(beanDefinition);
 	}
 
@@ -175,6 +175,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 	}
 
 
+	// 找到bean生命周期相关的元数据:@PostConstruct和@PreDestroy
 	private LifecycleMetadata findLifecycleMetadata(Class<?> clazz) {
 		if (this.lifecycleMetadataCache == null) {
 			// Happens after deserialization, during destruction...
@@ -195,6 +196,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 		return metadata;
 	}
 
+	// 找到bean生命周期相关的元数据:@PostConstruct和@PreDestroy
 	private LifecycleMetadata buildLifecycleMetadata(final Class<?> clazz) {
 		List<LifecycleElement> initMethods = new ArrayList<>();
 		List<LifecycleElement> destroyMethods = new ArrayList<>();

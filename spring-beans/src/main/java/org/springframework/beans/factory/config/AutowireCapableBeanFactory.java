@@ -62,6 +62,12 @@ import org.springframework.lang.Nullable;
 public interface AutowireCapableBeanFactory extends BeanFactory {
 
 	/**
+	 * 不自动注入.
+	 * 但BeanFactoryAware等接口的回调注入或者注解驱动的注入仍然有效.
+	 * <p>
+	 * bean必须显式告诉Spring需要依赖注入:
+	 * 如xml的"ref",注明"@Autowire"注解等.
+	 * <p>
 	 * Constant that indicates no externally defined autowiring. Note that
 	 * BeanFactoryAware etc and annotation-driven injection will still be applied.
 	 * @see #createBean
@@ -97,6 +103,10 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	int AUTOWIRE_CONSTRUCTOR = 3;
 
 	/**
+	 * 通过bean的自我检查决定用那种注入策略:
+	 * 如果有无参构造函数,就使用AUTOWIRE_BY_TYPE,使用setter方式自动注入,
+	 * 否则使用AUTOWIRE_CONSTRUCTOR,使用构造函数方式自动注入.
+	 * <p>
 	 * Constant that indicates determining an appropriate autowire strategy
 	 * through introspection of the bean class.
 	 * @see #createBean
@@ -108,6 +118,9 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	int AUTOWIRE_AUTODETECT = 4;
 
 	/**
+	 * 当bean name有此后缀,表示强制要求Spring实例化bean时返回原始对象,
+	 * 而不能替换为动态代理对象.具体去看applyBeanPostProcessorsBeforeInitialization(...)
+	 * <p>
 	 * Suffix for the "original instance" convention when initializing an existing
 	 * bean instance: to be appended to the fully-qualified bean class name,
 	 * e.g. "com.mypackage.MyClass.ORIGINAL", in order to enforce the given instance

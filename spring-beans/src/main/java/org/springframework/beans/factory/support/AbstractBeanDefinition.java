@@ -65,6 +65,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public static final String SCOPE_DEFAULT = "";
 
 	/**
+	 * 不自动注入,bean必须显式告诉Spring需要依赖注入:
+	 * 如xml的"ref",注明"@Autowire"注解等.
 	 * Constant that indicates no external autowiring at all.
 	 * @see #setAutowireMode
 	 */
@@ -89,6 +91,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public static final int AUTOWIRE_CONSTRUCTOR = AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR;
 
 	/**
+	 * 通过bean的自我检查决定用那种注入策略:
+	 * 如果有无参构造函数,就使用AUTOWIRE_BY_TYPE,使用setter方式自动注入,
+	 * 否则使用AUTOWIRE_CONSTRUCTOR,使用构造函数方式自动注入.
+	 * <p>
 	 * Constant that indicates determining an appropriate autowire strategy
 	 * through introspection of the bean class.
 	 * @see #setAutowireMode
@@ -561,6 +567,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	public int getResolvedAutowireMode() {
 		if (this.autowireMode == AUTOWIRE_AUTODETECT) {
+			// 如果有无参构造函数,就使用AUTOWIRE_BY_TYPE,使用setter方式自动注入,
+			// 否则使用AUTOWIRE_CONSTRUCTOR,使用构造函数方式自动注入.
 			// Work out whether to apply setter autowiring or constructor autowiring.
 			// If it has a no-arg constructor it's deemed to be setter autowiring,
 			// otherwise we'll try constructor autowiring.
@@ -745,6 +753,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * 指定解析构造函数时使用宽容(lenient,默认)模式还是严格(strict)模式.
+	 * 严格(strict)模式: 当存在多个参数完全匹配(参数可能经过转化)的冲突的构造函数,
+	 * 宽容(lenient,默认)模式: 使用有最接近的类型匹配的构造函数,而不报错.
+	 * <p>
 	 * Specify whether to resolve constructors in lenient mode ({@code true},
 	 * which is the default) or to switch to strict resolution (throwing an exception
 	 * in case of ambiguous constructors that all match when converting the arguments,
@@ -755,6 +767,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * 解析构造函数时使用宽容(lenient,默认)模式还是严格(strict)模式.
+	 * 两者差别见上面:setLenientConstructorResolution(...).
+	 * <p>
 	 * Return whether to resolve constructors in lenient mode or in strict mode.
 	 */
 	public boolean isLenientConstructorResolution() {

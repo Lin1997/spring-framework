@@ -130,7 +130,7 @@ class ConstructorResolver {
 		else {
 			Object[] argsToResolve = null;
 			synchronized (mbd.constructorArgumentLock) {
-				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;
+				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;	// 先看看缓存
 				if (constructorToUse != null && mbd.constructorArgumentsResolved) {
 					// Found a cached constructor...
 					argsToUse = mbd.resolvedConstructorArguments;
@@ -160,15 +160,16 @@ class ConstructorResolver {
 				}
 			}
 
+			// 如果只有一个候选构造函数,且没有为该bean显示指定的构造器参数值
 			if (candidates.length == 1 && explicitArgs == null && !mbd.hasConstructorArgumentValues()) {
 				Constructor<?> uniqueCandidate = candidates[0];
-				if (uniqueCandidate.getParameterCount() == 0) {
+				if (uniqueCandidate.getParameterCount() == 0) {	// 它还是无参构造函数
 					synchronized (mbd.constructorArgumentLock) {
 						mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate;
 						mbd.constructorArgumentsResolved = true;
 						mbd.resolvedConstructorArguments = EMPTY_ARGS;
 					}
-					bw.setBeanInstance(instantiate(beanName, mbd, uniqueCandidate, EMPTY_ARGS));
+					bw.setBeanInstance(instantiate(beanName, mbd, uniqueCandidate, EMPTY_ARGS));	//	使用该无参构造函数实例化
 					return bw;
 				}
 			}
@@ -179,8 +180,8 @@ class ConstructorResolver {
 			ConstructorArgumentValues resolvedValues = null;
 
 			int minNrOfArgs;
-			if (explicitArgs != null) {
-				minNrOfArgs = explicitArgs.length;
+			if (explicitArgs != null) {				// 如果有显式指定的构造器参数.
+				minNrOfArgs = explicitArgs.length;	// 那需要的构造函数至少需要有这么多个参数.
 			}
 			else {
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
@@ -189,8 +190,8 @@ class ConstructorResolver {
 			}
 
 			AutowireUtils.sortConstructors(candidates);
-			int minTypeDiffWeight = Integer.MAX_VALUE;
-			Set<Constructor<?>> ambiguousConstructors = null;
+			int minTypeDiffWeight = Integer.MAX_VALUE;			// 找到参数类型差异的最小
+			Set<Constructor<?>> ambiguousConstructors = null;	// 冲突的构造函数
 			LinkedList<UnsatisfiedDependencyException> causes = null;
 
 			for (Constructor<?> candidate : candidates) {
@@ -201,7 +202,7 @@ class ConstructorResolver {
 					// do not look any further, there are only less greedy constructors left.
 					break;
 				}
-				if (paramTypes.length < minNrOfArgs) {
+				if (paramTypes.length < minNrOfArgs) {	// 不满足最小参数长度,跳过
 					continue;
 				}
 
@@ -238,6 +239,7 @@ class ConstructorResolver {
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
+				// 会调用获取差异性权重值
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
@@ -282,7 +284,7 @@ class ConstructorResolver {
 		}
 
 		Assert.state(argsToUse != null, "Unresolved constructor arguments");
-		bw.setBeanInstance(instantiate(beanName, mbd, constructorToUse, argsToUse));
+		bw.setBeanInstance(instantiate(beanName, mbd, constructorToUse, argsToUse));	// 使用选出的构造函数进行实例化.
 		return bw;
 	}
 

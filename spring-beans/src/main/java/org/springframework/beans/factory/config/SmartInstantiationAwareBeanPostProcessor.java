@@ -22,6 +22,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
+ * InstantiationAwareBeanPostProcessor的扩展,添加了一些接口函数:
+ * 预测当前被处理bean的最终类型;
+ * 决定当前被处理bean的候选构造器;
+ * 提前暴露早期的bean应用(通常用来解决循环依赖)...
+ * <p>
+ * 这是框架内部使用的接口,以至于将来会有新方法添加到该接口(这应该也是为什么下面的注释没提到后两个接口函数...)
+ * <p>
  * Extension of the {@link InstantiationAwareBeanPostProcessor} interface,
  * adding a callback for predicting the eventual type of a processed bean.
  *
@@ -67,6 +74,10 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	}
 
 	/**
+	 * 获取一个早期的bean引用,通常用来解决循环依赖问题.
+	 * <p>
+	 * 这个回调给post-processors提供了一个机会来提早暴露一个wrapper,
+	 * 也就是说,在目标bean完成了全部的初始化过程之前.
 	 * Obtain a reference for early access to the specified bean,
 	 * typically for the purpose of resolving a circular reference.
 	 * <p>This callback gives post-processors a chance to expose a wrapper

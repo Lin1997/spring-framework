@@ -186,6 +186,7 @@ public abstract class BeanUtils {
 	}
 
 	/**
+	 * 这里只对Kotlin的类做了特殊处理,对于Java类就简单返回null
 	 * Return the primary constructor of the provided class. For Kotlin classes, this
 	 * returns the Java constructor corresponding to the Kotlin primary constructor
 	 * (as defined in the Kotlin specification). Otherwise, in particular for non-Kotlin

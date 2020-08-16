@@ -99,6 +99,11 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 
 	@Override
 	protected boolean isInfrastructureClass(Class<?> beanClass) {
+		// 判定这个bean属不属于infrastructure bean(基础设施类型),
+		// 这些类型不应该被代理.如:
+		// Advice、Pointcut、Advisor等.
+		// 同时,切面(@Aspect)类也不应该被代理.
+
 		// Previously we setProxyTargetClass(true) in the constructor, but that has too
 		// broad an impact. Instead we now override isInfrastructureClass to avoid proxying
 		// aspects. I'm not entirely happy with that as there is no good reason not

@@ -1,15 +1,14 @@
 package mytest.component;
 
-import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class TestComponent1 implements FactoryBean<TestComponent1> {
-	@Override
-	public TestComponent1 getObject() throws Exception {
-		return new TestComponent1();
-	}
+@Component
+public class TestComponent1 {
+	TestComponent testComponent;
 
-	@Override
-	public Class<?> getObjectType() {
-		return getClass();
+	@Autowired
+	public TestComponent1(TestComponent testComponent) {
+		this.testComponent = testComponent;
 	}
 }

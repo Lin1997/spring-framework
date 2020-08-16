@@ -556,7 +556,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
-			instanceWrapper = createBeanInstance(beanName, mbd, args);
+			instanceWrapper = createBeanInstance(beanName, mbd, args);	// 实例化bean
 		}
 		Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
@@ -587,6 +587,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			// 将单例bean封装成ObjectFactory,添加到singletonFactories缓存中(即所谓的三级缓存).
+			// 可以用来解决单例bean的循环依赖.
+			// 由于是工厂模式,故调用ObjectFactory#getObject()时可以进行一些处理,
+			// 比如这里的getEarlyBeanReference()中,可以执行SmartInstantiationAwareBeanPostProcessor的相关回调
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -667,6 +671,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 从bean definition中获悉bean的class.
 	 * Determine the target type for the given bean definition.
 	 * @param beanName the name of the bean (for error handling purposes)
 	 * @param mbd the merged bean definition for the bean
@@ -1170,6 +1175,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
 
+		// 如果之前有创建过这个bean,那这里可以利用缓存跳过解析.
 		// Shortcut when re-creating the same bean...
 		boolean resolved = false;
 		boolean autowireNecessary = false;
@@ -1181,7 +1187,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
-		if (resolved) {
+		if (resolved) {	// 跳过解析直接实例化
 			if (autowireNecessary) {
 				return autowireConstructor(beanName, mbd, null, null);
 			}
@@ -1191,6 +1197,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Candidate constructors for autowiring?
+		// 看看能不能通过SmartInstantiationAwareBeanPostProcessor得到候选构造函数.
+		// 比如常用的:AutowiredAnnotationBeanPostProcessor#determineCandidateConstructors（...）
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
@@ -1198,11 +1206,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Preferred constructors for default construction?
-		ctors = mbd.getPreferredConstructors();
+		ctors = mbd.getPreferredConstructors();	// 看看有没有首选的构造方法
 		if (ctors != null) {
 			return autowireConstructor(beanName, mbd, ctors, null);
 		}
 
+		// 正常情况下,应该就简单的使用午餐构造器.
 		// No special handling: simply use no-arg constructor.
 		return instantiateBean(beanName, mbd);
 	}
@@ -1331,6 +1340,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * autowire constructor: 使用by type方式查找构造器参数依赖.
 	 * "autowire constructor" (with constructor arguments by type) behavior.
 	 * Also applied if explicit constructor argument values are specified,
 	 * matching all remaining arguments with beans from the bean factory.

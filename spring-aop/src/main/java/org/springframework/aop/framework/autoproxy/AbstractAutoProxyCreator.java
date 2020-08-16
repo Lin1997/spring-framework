@@ -240,12 +240,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
 
+	// 动态代理,替换成代理对象.
+	// 根据接口的定义,当想替换bean对象时,返回替换的对象;返回null则不替换.
+	// 因此,在此处应return代理对象,可以完成替换.
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
 
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
-			if (this.advisedBeans.containsKey(cacheKey)) {
+			if (this.advisedBeans.containsKey(cacheKey)) {	// 已经增强过了
 				return null;
 			}
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
@@ -358,6 +361,10 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
+	 * 判定这个bean属不属于infrastructure bean(基础设施类型),
+	 * 这些类型不应该被代理.如:
+	 * Advice、Pointcut、Advisor等.
+	 * <p>
 	 * Return whether the given bean class represents an infrastructure class
 	 * that should never be proxied.
 	 * <p>The default implementation considers Advices, Advisors and
@@ -381,6 +388,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
+	 * 返回true代表要跳过该bean的代理.
+	 * 这里的实现是: 正常情况返回false,除非bean名字暗示它要是一个"原始实例"(bean name带 ".ORIGINAL" 后缀)
+	 * <p>
 	 * Subclasses should override this method to return {@code true} if the
 	 * given bean should not be considered for auto-proxying by this post-processor.
 	 * <p>Sometimes we need to be able to avoid this happening, e.g. if it will lead to

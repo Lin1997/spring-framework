@@ -144,6 +144,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 将单例bean的ObjectFactory添加到singletonFactories缓存中(即所谓的第三级缓存).
+	 * 可以用来解决单例bean的循环依赖.
+	 * <p>
 	 * Add the given singleton factory for building the specified singleton
 	 * if necessary.
 	 * <p>To be called for eager registration of singletons, e.g. to be able to
@@ -169,6 +172,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 返回指定名字的 原始的(raw)单例对象.
+	 * 检查已经实例化的单例对象, 允许暴露当前正在被创建的单例对象的早期的(early)引用.(用来解决循环依赖)
 	 * Return the (raw) singleton object registered under the given name.
 	 * <p>Checks already instantiated singletons and also allows for an early
 	 * reference to a currently created singleton (resolving a circular reference).
@@ -196,6 +201,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 尝试从singletonObjects中返回指定名字的 原始的(raw)单例对象.
+	 * 如果没有就创建一个.
 	 * Return the (raw) singleton object registered under the given name,
 	 * creating and registering a new one if none registered yet.
 	 * @param beanName the name of the bean
