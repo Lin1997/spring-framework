@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 根据目标对象中是否存在指定类型的注解来匹配Joinpoint.
  * Simple Pointcut that looks for a specific Java 5 annotation
  * being present on a {@link #forClassAnnotation class} or
  * {@link #forMethodAnnotation method}.

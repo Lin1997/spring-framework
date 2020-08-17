@@ -17,6 +17,8 @@
 package org.springframework.aop.framework;
 
 /**
+ * Spring AOP中,不同AopProxy实现的实例化过程采用(抽象)工厂模式进行封装,
+ * 详见createAopProxy方法注释.
  * Interface to be implemented by factories that are able to create
  * AOP proxies based on {@link AdvisedSupport} configuration objects.
  *
@@ -44,6 +46,8 @@ package org.springframework.aop.framework;
 public interface AopProxyFactory {
 
 	/**
+	 * 根据传入的AdvisedSupport实例提供的相关信息,来决定生成什么类型的AopProxy.
+	 * 可以去看DefaultAopProxyFactory#createAopProxy(...)
 	 * Create an {@link AopProxy} for the given AOP configuration.
 	 * @param config the AOP configuration in the form of an
 	 * AdvisedSupport object

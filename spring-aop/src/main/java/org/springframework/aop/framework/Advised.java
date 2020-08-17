@@ -23,6 +23,12 @@ import org.springframework.aop.TargetClassAware;
 import org.springframework.aop.TargetSource;
 
 /**
+ * 保存生成代理对象的一些具体信息,如:
+ * 要针对哪些目标类生成代理对象;
+ * 要为代理对象加入何种横切逻辑等.
+ * 同时,我们可以使用该接口访问相应代理对象所持有的Advisor(Aspect),
+ * 进行Advisor的添加、移除等操作,即使代理对象已经胜场完毕.
+ * 当然,直接操作该接口,更多是用于测试场景.
  * Interface to be implemented by classes that hold the configuration
  * of a factory of AOP proxies. This configuration includes the
  * Interceptors and other advice, Advisors, and the proxied interfaces.

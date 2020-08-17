@@ -25,6 +25,9 @@ import java.util.List;
 import org.springframework.util.PatternMatchUtils;
 
 /**
+ * 属于StaticMethodMatcherPointcut的子类,可以根据自身指定的一组方法名称(可以使用通配符"*"进行简单模糊匹配)
+ * 与Joinpoint处的方法的方法名称进行匹配.
+ * 由于仅对名称匹配而不考虑参数,故无法对重载的方法名进行匹配.
  * Pointcut bean for simple method name matches, as an alternative to regexp patterns.
  *
  * <p>Does not handle overloaded methods: all methods with a given name will be eligible.

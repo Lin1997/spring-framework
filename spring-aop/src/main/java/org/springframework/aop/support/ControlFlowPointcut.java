@@ -27,6 +27,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 特殊的Pointcut类型,匹配程序的调用流程,而不是对莫格方法的执行所在的Joinpoint处的单一特征进行匹配.
+ * 比如,我们可以指定只有当TargetObject的method1方法在TargetCaller类锁声明的方法中被调用的时候,
+ * 才对method1方法进行拦截.其它地方的调用则不拦截.
+ * 具体示例代码见《Spring揭秘》9.2
  * Pointcut and method matcher for use in simple <b>cflow</b>-style pointcut.
  * Note that evaluating such pointcuts is 10-15 times slower than evaluating
  * normal pointcuts, but they are useful in some cases.

@@ -17,6 +17,11 @@
 package org.springframework.aop;
 
 /**
+ * 用于匹配被执行织入操作的对象.
+ * matches方法返回true才会对这个类型的目标对象进行织入操作.
+ * 当Pointcut中返回的ClassFilter是TrueClassFilter.INSTANCE时,
+ * Pointcut的匹配将会针对系统中所有的目标类以及他们的实例进行.
+ * <p>
  * Filter that restricts matching of a pointcut or introduction to
  * a given set of target classes.
  *

@@ -21,6 +21,8 @@ import java.io.Serializable;
 import org.springframework.util.Assert;
 
 /**
+ * 记载着生成代理对象的控制信息,5个bool类型属性分别控制在生成代理对象的时候,
+ * 应该采取哪些行为措施,详见它们的注释.
  * Convenience superclass for configuration used in creating proxies,
  * to ensure that all proxy creators have consistent properties.
  *
@@ -34,14 +36,30 @@ public class ProxyConfig implements Serializable {
 	private static final long serialVersionUID = -8409359707199703185L;
 
 
+	//	true则ProxyFactory会强制使用CGLIB对目标对象进行代理
 	private boolean proxyTargetClass = false;
 
+	// 告知代理对象是否需要采取进一步的优化措施,
+	// 如代理对象生成之后,即使为其添加或移除了相应的Advice,
+	// 代理对象也可以忽略这种变动.
+	// 该属性为true时,ProxyFactory会使用CGLIB对目标对象进行代理
 	private boolean optimize = false;
 
+	// 控制生成的代理对象是否可以强制转型为Advised,
+	// 默认false表示任何生成的代理对象都可强转为Advised,
+	// 我们可以通过Advised查询代理对象的一些状态
 	boolean opaque = false;
 
+	// 可以让AOP框架在生成代理对象时,
+	// 将当前代理对象绑定到ThreadLocal.
+	// 如果目标对象需要访问当前代理对象,
+	// 可以通过AopContext.currentProxy()取得.
+	// 出于性能考虑,默认为false.
 	boolean exposeProxy = false;
 
+	// 如果设为true,那么一旦针对代理对象生成的各项信息配置完成
+	// 则不容许更改. 比如ProxyFactory的设置完毕,且该选项为true
+	// 则不能对Advice进行任何变动,这样可以优化代理对象生成的性能.
 	private boolean frozen = false;
 
 

@@ -43,6 +43,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
+ * 功能分为两类:
+ * ProxyConfig分支:记载着生成代理对象的控制信息;
+ * Advised分支:记载着生成代理对象所需要的必要信息,如相关目标类、Advice、Advisor(Aspect)等.
+ * <p>
  * Base class for AOP proxy configuration managers.
  * These are not themselves AOP proxies, but subclasses of this class are
  * normally factories from which AOP proxy instances are obtained directly.

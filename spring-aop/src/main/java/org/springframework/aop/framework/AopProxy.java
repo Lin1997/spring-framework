@@ -19,6 +19,9 @@ package org.springframework.aop.framework;
 import org.springframework.lang.Nullable;
 
 /**
+ * Spring AOP使用AopProxy对不同的代理机制进行了抽象,
+ * 具体的机制交给子类实现:JdkDynamicAopProxy和CglibAopProxy等.
+ * 不同AopProxy实现的实例化过程采用(抽象)工厂模式进行封装:AopProxyFactory.
  * Delegate interface for a configured AOP proxy, allowing for the creation
  * of actual proxy objects.
  *

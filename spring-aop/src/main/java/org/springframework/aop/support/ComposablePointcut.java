@@ -24,6 +24,8 @@ import org.springframework.aop.Pointcut;
 import org.springframework.util.Assert;
 
 /**
+ * ComposablePointcut就是Spring AOP提供的可以进行Pointcut逻辑运算的Pointcut实现.
+ * 它可以进行Pointcut之间的"并"、"交"运算.
  * Convenient class for building up pointcuts.
  *
  * <p>All methods return {@code ComposablePointcut}, so we can use concise idioms

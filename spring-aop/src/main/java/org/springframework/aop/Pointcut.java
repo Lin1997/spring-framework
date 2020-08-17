@@ -17,6 +17,12 @@
 package org.springframework.aop;
 
 /**
+ * APO框架中所有Pointcut的最顶层抽象,该接口定义了两个方法用来帮助捕捉系统中相应的Joinpoint,
+ * 并体提供了一个TruePointcut类型实例.
+ * 如果Pointcut类型为TruePointcut,默认会对系统中所有的对象,以及对象上所有被支持的Joinpoint
+ * 进行匹配.
+ * 关于ClassFilter和MethodMatcher分别见其注释.
+ *
  * Core Spring pointcut abstraction.
  *
  * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.

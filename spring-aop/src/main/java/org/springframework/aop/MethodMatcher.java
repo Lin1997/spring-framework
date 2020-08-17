@@ -19,6 +19,27 @@ package org.springframework.aop;
 import java.lang.reflect.Method;
 
 /**
+ * 用于匹配被执行织入操作的方法.
+ * 该接口定义了两个matches,这两个方法的分界线就是isRuntime()方法: 在对对象具体方法进行拦截时,
+ * 可以忽略每次方法执行的时候调用者传入的参数,也可以每次都检查这些方法参数,以强化拦截条件.
+ * 比如:
+ * 如果只想在[方法前]插入某功能,那方法的参数对于Joinpoint捕捉就是可以忽略的;
+ * 而如果想在[方法体中]处理一些参数,那么方法的参数就是在匹配Joinpoint的时候必须要考虑的.
+ * (1)对于前一种情况: isRuntime返回false,表示不会考虑具体Joinpoint方法参数,
+ * 这种类型的MethodMatcher称之为StaticMethodMatcher.因为无需每次都检查参数,
+ * 那么对于同样类型的方法匹配结果,可以在框架内部缓存以提高性能.
+ * 对于StaticMethodMatcher(isRuntime返回false),
+ * 只有boolean matches(Method method, Class<?> targetClass)方法被执行,
+ * 返回的匹配结果将会成为其所属Pointcut的主要依据.
+ * (2)当isRuntime返回true时,表明MethodMatcher将会每次都对方法参数进行匹配检查,
+ * 这种类型的MethodMatcher称之为DynamicMethodMatcher.因为每次都要检查参数,
+ * 所以无法对匹配结果进行缓存,故效率较前者差,最好避免使用(大部分情况前者已可以满足需要).
+ * 对于DynamicMethodMatcher(当isRuntime返回true),
+ * 且方法boolean matches(Method method, Class<?> targetClass)也返回true,
+ * boolean matches(Method method, Class<?> targetClass, Object... args)也会被执行,进行进一步检查.
+ * 如果两个参数的matches方法返回false,则不管是StaticMethodMatcher还是DynamicMethodMatcher,
+ * 该结果已经是最终的匹配结果,无需执行三个参数的matches方法.
+ *
  * Part of a {@link Pointcut}: Checks whether the target method is eligible for advice.
  *
  * <p>A MethodMatcher may be evaluated <b>statically</b> or at <b>runtime</b> (dynamically).

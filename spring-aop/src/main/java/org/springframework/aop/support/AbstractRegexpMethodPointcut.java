@@ -26,6 +26,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 专门提供基于正则表达式的StaticMethodMatcherPointcut实现分支.
+ * 声明了pattern和patterns属性,可以指定一个或多个正则表达式的Pattern.
  * Abstract base regular expression pointcut bean. JavaBean properties are:
  * <ul>
  * <li>pattern: regular expression for the fully-qualified method names to match.

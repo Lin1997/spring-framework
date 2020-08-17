@@ -2,6 +2,10 @@ package apitest;
 
 import mytest.AppConfig;
 import org.junit.Test;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
+import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
@@ -15,7 +19,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class ApiTest {
 	@Test
-	public void apiTest() {
+	public void autowireTest() {
 		// 首先构造一个 DefaultListableBeanFactory 作为 BeanDefinitionRegistry
 		DefaultListableBeanFactory beanRegistry = new DefaultListableBeanFactory();
 		// 进行具体的对象注册和相关依赖管理

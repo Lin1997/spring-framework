@@ -23,6 +23,25 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * Spring AOP的一个织入器.为ProxyFactory提供了必要的"生产原材料后",
+ * ProxyFactory就会返回织入完成的代理对象.
+ * <code>
+ *      ProxyFactory weaver = new ProxyFactory();
+ * 		// 设置要织入的目标对象
+ * 		weaver.setTarget(targetObject);
+ * 		// 可以明确指定代理的接口类型(使用JDK基于接口的动态代理): weaver.setInterfaces(new Class[]{ITestInterface.class});
+ * 		// 也可以强制使用CGLIB的基于类的动态代理:	weaver.setProxyTargetClass(true);
+ * 		// 设置将要应用到目标对象的Aspect(Spring中叫Advisor)
+ * 		Advisor advisor =new NameMatchMethodPointcutAdvisor();
+ * 		((NameMatchMethodPointcutAdvisor)advisor).setMappedName("methodName");	// Aspect包含了Pointcut
+ * 		((NameMatchMethodPointcutAdvisor)advisor).setAdvice(new PerformanceMonitorInterceptor());	// Aspect包含了Advice
+ * 		weaver.addAdvisor(advisor);
+ * 		Object proxyObject = weaver.getProxy();
+ * 		// 现在可以使用proxyObject了
+ * </code>
+ *
+ *
+ * <p>
  * Factory for AOP proxies for programmatic use, rather than via declarative
  * setup in a bean factory. This class provides a simple way of obtaining
  * and configuring AOP proxy instances in custom user code.

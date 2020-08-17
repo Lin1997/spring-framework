@@ -21,6 +21,9 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
+ * AbstractRegexpMethodPointcut的实现类,基于JDK标准的正则表达式.
+ * 注意不像NameMatchMethodPointcut只需指定方法名称,
+ * 正则表达式的Pattern必须匹配整个方法签名(即包括参数)
  * Regular expression pointcut based on the {@code java.util.regex} package.
  * Supports the following JavaBean properties:
  * <ul>
