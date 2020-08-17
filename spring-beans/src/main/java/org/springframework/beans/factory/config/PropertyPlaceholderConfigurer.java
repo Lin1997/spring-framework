@@ -28,6 +28,17 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 import org.springframework.util.StringValueResolver;
 
 /**
+ *
+ * 通常情况下，我们不想将类似于系统管理相关的信息同业务对象相关的配置信息混杂到XML配置
+ * 文件中，以免部署或者维护期间因为改动繁杂的XML配置文件而出现问题。我们会将一些数据库连接
+ * 信息、邮件服务器等相关信息单独配置到一个properties文件中，这样，如果因系统资源变动的话，只
+ * 需要关注这些简单properties配置文件即可。
+ * PropertyPlaceholderConfigurer允许我们在XML配置文件中使用占位符（PlaceHolder），
+ * 并将这些占位符所代表的资源单独配置到简单的properties文件中来加载。
+ * 当该类的回调被调用时,它会使用properties
+ * 配置文件中的配置信息来替换相应BeanDefinition中占位符所表示的属性值。
+ * 这样，当实例化bean时，bean定义中的属性值就是最终替换完成的了。
+ *
  * {@link PlaceholderConfigurerSupport} subclass that resolves ${...} placeholders against
  * {@link #setLocation local} {@link #setProperties properties} and/or system properties
  * and environment variables.

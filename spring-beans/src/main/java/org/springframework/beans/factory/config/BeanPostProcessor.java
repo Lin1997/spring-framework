@@ -20,6 +20,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
+ * BeanPostProcessor是存在于对象实例化阶段，而BeanFactoryPostProcessor则是存在于容器启动阶段.
+ * BeanPostProcessor会处理容器内所有符合条件的实例化后的对象实例,
+ * 其两个回调方法为我们扩展容器的对象实例化过程中的行为提供了极大的便利，
+ * 我们几乎可以对传入的对象实例执行任何的操作.
+ * 常见的使用场景:
+ * ApplicationContext对应的那些Aware接口实际上就是通过BeanPostProcessor的方式进行处理的.
+ * 替换当前对象实例或者字节码增强当前对象实例等,Spring的AOP使用
+ * BeanPostProcessor来为对象生成相应的代理对象，如BeanNameAutoProxyCreator.
+ * 实际上，有一种特殊类型的BeanPostProcessor叫InstantiationAwareBeanPostProcessor
+ * 它的执行时机与通常的BeanPostProcessor不同:详情见其注释.
+ * <p>
  * Factory hook that allows for custom modification of new bean instances,
  * e.g. checking for marker interfaces or wrapping them with proxies.
  *

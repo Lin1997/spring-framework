@@ -19,6 +19,14 @@ package org.springframework.beans.factory.config;
 import org.springframework.beans.BeansException;
 
 /**
+ * BeanFactoryPostProcessor是Spring提供的一种容器扩展机制,
+ * 允许我们在容器实例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。
+ * 比如修改其中bean定义的某些属性，为bean定义增加其他信息等。
+ *
+ * 对于BeanFactory来说，我们需要用手动方式应用所有的BeanFactoryPostProcessor:
+ * myPostProcessor.postProcessBeanFactory(beanFactory);
+ * 而ApplicationContext会自动识别配置文件中的BeanFactoryPostProcessor并应用它
+ *
  * Allows for custom modification of an application context's bean definitions,
  * adapting the bean property values of the context's underlying bean factory.
  *

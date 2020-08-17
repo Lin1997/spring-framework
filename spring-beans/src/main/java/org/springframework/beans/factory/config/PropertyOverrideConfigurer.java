@@ -27,6 +27,13 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanInitializationException;
 
 /**
+ * 可以通过PropertyOverrideConfigurer对容器中配置的任何你想处理的bean定义的property信
+ * 息进行覆盖替换。这听起来比较抽象，我们还是给个例子吧！比如之前的dataSource定义中，
+ * maxActive的值为100，如果我们觉得100不合适，那么可以通过PropertyOverrideConfigurer在其
+ * 相应的properties文件中做如下所示配置，把100这个值给覆盖掉，如将其配置为200.
+ * 这样，当容器实例化对象的时候，该 dataSource对象对应的maxActive值就是200，而不是原来
+ * XML配置中的100
+ *
  * Property resource configurer that overrides bean property values in an application
  * context definition. It <i>pushes</i> values from a properties file into bean definitions.
  *

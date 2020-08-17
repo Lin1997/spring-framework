@@ -17,6 +17,21 @@
 package org.springframework.beans.factory;
 
 /**
+ * 容器会检查singleton类型的bean实例，看其是否实现了DisposableBean接口。
+ * 或者其对应的bean定义是否通过<bean>的destroy-method属性指定了自定义的对象销毁方法。如果是，
+ * 就会为该实例注册一个用于对象销毁的回调（Callback），以便在这些singleton类型的对象实例销毁之
+ * 前，执行销毁逻辑。
+ * 最常见到的该功能的使用场景就是在Spring容器中注册数据库连接池，在系统退出后，连接池应
+ * 该关闭，以释放相应资源.
+ * 但Spring容器在关闭之前，不会聪明到自动调用这些回调方法。
+ * 对于BeanFactory容器来说。我们需要在独立应用程序的主程序退出之前，或者其他被认为是合
+ * 适的情况下，调用ConfigurableBeanFactory提供的
+ * destroySingletons()方法销毁容器中管理的所有singleton类型的对象实例.
+ * 对于ApplicationContext容器来说。道理是一样的。不过AbstractApplicationContext为我们
+ * 提供了方便的registerShutdownHook()方法，用户调用完该方法后，
+ * 该方法底层将使用标准的Runtime类的addShutdownHook()方式来调用相应bean对象的销毁逻辑，
+ * 从而保证在Java虚拟机退出之前，这些singtleton类型的bean对象实例的自定义销毁逻辑会被执行。
+ * <p>
  * Interface to be implemented by beans that want to release resources on destruction.
  * A {@link BeanFactory} will invoke the destroy method on individual destruction of a
  * scoped bean. An {@link org.springframework.context.ApplicationContext} is supposed

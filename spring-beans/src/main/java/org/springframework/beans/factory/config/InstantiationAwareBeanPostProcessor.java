@@ -23,6 +23,13 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 
 /**
+ * InstantiationAwareBeanPostProcessor
+ * 接口可以在对象的实例化过程中导致某种类似于电路“短路”的效果.
+ * 实例化bean对象步骤之前，容器会首先检查容器中是否注册有
+ * InstantiationAwareBeanPostProcessor类型的BeanPostProcessor。
+ * 如果有，首先使用相应的InstantiationAwareBeanPostProcessor来构造对象实例。
+ * 构造成功后直接返回构造完成的对象实例，而不会按照“正规的流程”继续执行。
+ *
  * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback,
  * and a callback after instantiation but before explicit properties are set or
  * autowiring occurs.

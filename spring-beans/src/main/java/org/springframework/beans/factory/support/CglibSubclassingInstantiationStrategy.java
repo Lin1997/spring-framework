@@ -41,6 +41,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * 关于策略模式:看父节口InstantiationStrategy.
+ * 继承了SimpleInstantiationStrategy的以反射方式实例化对象的功能，并且通过CGLIB
+ * 的动态字节码生成功能，该策略实现类可以动态生成某个类的子类，进而满足了方法注入所需的对象
+ * 实例化需求.
+ * 默认情况下，容器内部采用的是该接口 CglibSubclassingInstantiationStrategy.
+ *
  * Default object instantiation strategy for use in BeanFactories.
  *
  * <p>Uses CGLIB to generate subclasses dynamically if methods need to be

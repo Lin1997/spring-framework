@@ -32,6 +32,10 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 关于策略模式:看父节口InstantiationStrategy.
+ * SimpleInstantiationStrategy实现了简单的对象实例化功能，可以通过
+ * 反射来实例化对象实例，但不支持方法注入方式的对象实例化.
+ *
  * Simple object instantiation strategy for use in a BeanFactory.
  *
  * <p>Does not support Method Injection, although it provides hooks for subclasses

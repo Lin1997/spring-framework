@@ -17,6 +17,14 @@
 package org.springframework.beans.factory;
 
 /**
+ * InitializingBean是容器内部广泛使用的一个对象生命周期标识接口.
+ * 在对象实例化过程调用过“BeanPostProcessor的前置处理”之后，
+ * 会接着检测当前对象是否实现了InitializingBean接口，
+ * 如果是，则会调用其afterPropertiesSet()方法进一步调整对象实例的状态.
+ * 虽然该接口在Spring容器内部广泛使用，但如果真的让我们的业务对象实现这个接口，则显得
+ * Spring容器比较具有侵入性。所以，Spring还提供了另一种方式来指定自定义的对象初始化操作，那就
+ * 是在XML配置的时候，使用<bean>的init-method属性。
+ *
  * Interface to be implemented by beans that need to react once all their properties
  * have been set by a {@link BeanFactory}: e.g. to perform custom initialization,
  * or merely to check that all mandatory properties have been set.

@@ -24,6 +24,11 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.Nullable;
 
 /**
+ * 容器在内部实现的时候，采用“策略模式（Strategy Pattern）”来决定采用何种方式初始化bean实例。
+ * 通常，可以通过反射或者CGLIB动态字节码生成来初始化相应的bean实例或者动态生成其子类。
+ * 该接口是是实例化策略的抽象接口，其直接子类SimpleInstantiationStrategy实现了简单的对象实例化功能，可以通过
+ * 反射来实例化对象实例，但不支持方法注入方式的对象实例化.
+ *
  * Interface responsible for creating instances corresponding to a root bean definition.
  *
  * <p>This is pulled out into a strategy as various approaches are possible,
