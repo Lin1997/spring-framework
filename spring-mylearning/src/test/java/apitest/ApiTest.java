@@ -1,11 +1,6 @@
 package apitest;
 
-import mytest.AppConfig;
 import org.junit.Test;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
-import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
@@ -14,8 +9,6 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class ApiTest {
 	@Test

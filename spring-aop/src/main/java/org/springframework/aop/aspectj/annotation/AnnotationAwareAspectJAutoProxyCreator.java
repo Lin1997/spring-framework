@@ -28,7 +28,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * 根据注解捕获信息以完成自动代理.
+ * AbstractAutoProxyCreator的扩展类,根据注解捕获信息以完成自动代理.
+ * 它会自动搜索IOC容器中注册的Aspect,并应用到Pointcut定义的各个目标对象上.
  * {@link AspectJAwareAdvisorAutoProxyCreator} subclass that processes all AspectJ
  * annotation aspects in the current application context, as well as Spring Advisors.
  *

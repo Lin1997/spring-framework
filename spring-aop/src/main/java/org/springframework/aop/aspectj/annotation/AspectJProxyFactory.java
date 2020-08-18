@@ -32,6 +32,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 与ProxyFactory没多大差别,只不过多了addAspect()方法,
+ * 可以直接添加相应的Aspect定义.
  * AspectJ-based proxy factory, allowing for programmatic building
  * of proxies which include AspectJ aspects (code style as well
  * Java 5 annotation style).
