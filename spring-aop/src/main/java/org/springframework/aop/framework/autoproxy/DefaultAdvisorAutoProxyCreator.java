@@ -20,6 +20,10 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.lang.Nullable;
 
 /**
+ * 使用该类,我们只需要在ApplicationContext的中注册一下DefaultAdvisorAutoProxyCreator的bean定义,
+ * 该类就会为我们完成自动代理剩下的事情:
+ * 自动搜寻容器内所有的Advisor(Aspect),然后根据Advisor提供的拦截信息,为符合条件的
+ * 容器中的目标对象生成相应的代理对象.
  * {@code BeanPostProcessor} implementation that creates AOP proxies based on all
  * candidate {@code Advisor}s in the current {@code BeanFactory}. This class is
  * completely generic; it contains no special code to handle any particular aspects,

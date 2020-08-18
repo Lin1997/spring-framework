@@ -51,6 +51,15 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * 在容器中使用ProxyFactoryBean进行横切逻辑的织入固然可行,但是若业务对象太多,就很难这样一个个地进行配置.
+ * 所以Spring AOP提供了自动代理(AutoProxy)机制,帮我们解决使用ProxyFactoryBean配置的工作量较大的问题.
+ * Spring AOP的自动代理实现建立在SmartInstantiationAwareBeanPostProcessor之上,
+ * 它与普通的BeanPostProcessor不同,当容器检测到SmartInstantiationAwareBeanPostProcessor时,
+ * 会直接通过回调中的逻辑构造对象实例返回,而不会走正常的对象实例化流程,也就是"短路“效果.
+ * 这样当对象实例化的时候,为其生成代理对象并返回,而不是目标对象本身,从而达到代理对象自动生成的目的.
+ * 可以去看该类的具体实现类.
+ * 此外,我们可以指定proxyTargetClass属性,控制所有代理对象的生成使采用CGLIB基于类的代理.
+ * <p>
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
  * that wraps each eligible bean with an AOP proxy, delegating to specified interceptors
  * before invoking the bean itself.

@@ -28,6 +28,10 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * AbstractAutoProxyCreator的实现类.
+ * 通过该类,我们可以通过指定一组容器内的目标对象对应的beanName,
+ * 将指定的一组拦截器应用到这些目标对象之上.
+ * 还可以在beanNames属性中指定"*"通配符以简化配置.
  * Auto proxy creator that identifies beans to proxy via a list of names.
  * Checks for direct, "xxx*", and "*xxx" matches.
  *

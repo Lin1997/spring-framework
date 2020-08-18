@@ -49,6 +49,20 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 容器的织入器——ProxyFactoryBean.
+ * 可以先看看ProxyFactory,它可以独立于Spring IOC容器来提供Spring AOP支持.
+ * 本类将Spring AOP与Spring IOC容器支持相结合,使我们可以在容器中对
+ * Pointcut与Advice等进行管理,即使他们依赖于其它业务对象,
+ * 也可以很容易地注入其中.
+ * ProxyFactoryBean的本质,应该是Proxy+FactoryBean,而不是ProxyFactory+Bean.
+ * 如果某个容器中对象依赖于ProxyFactoryBean,那么他将会使用到ProxyFactoryBean.getObject()
+ * 返回的对象,这就是ProxyFactoryBean得以在容器中游刃有余的原因.
+ * 由于与ProxyFactory一样继承于ProxyCreatorSupport,ProxyCreatorSupport基本已经把要做的事情
+ * (如设置目标对象、配置其它部件、生成对应的AopProxy等)全部完成了,所以要让ProxyFactoryBean.getObject()
+ * 返回相应目标对象的代理对象很简单.只需要在getObject()中通过父类的createAopProxy()取得相应的AopProxy,
+ * 然后"return AopProxy.getProxy()"即可,详细见下面getObject()的实现.
+ * 不过,本接口还添加了几个自己独有的配置属性,详见相应字段注释.
+ * <p>
  * {@link org.springframework.beans.factory.FactoryBean} implementation that builds an
  * AOP proxy based on beans in Spring {@link org.springframework.beans.factory.BeanFactory}.
  *
@@ -100,14 +114,26 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	// 可以指定多个要织入到目标对象的Advice、拦截器以及Advisor
+	// 再也不用通过ProxyFactory那样的addAdvice或addAdvisor方法一个一个地添加了.
+	// 若没有为ProxyFactoryBean明确设置目标对象,那么可以在interceptorNames最后一个元素位置
+	// 防止目标对象bean定义名称,这是特例,应避免这种配置方式.
+	// 此外,通过在指定的interceptorNames某个元素名称后加"*"通配符,
+	// 可以让ProxyFactoryBean在容器中搜寻符合条件的所有的Advisor并应用到目标对象,
+	// 这些符合条件的Advisor在Spring官方参考文档中称之为global advisor.
 	@Nullable
 	private String[] interceptorNames;
 
 	@Nullable
 	private String targetName;
 
+	// 如果没有明确只当要代理的接口,ProxyFactoryBean会
+	// 自动检测目标对象所实现的接口类型并进行代理.
 	private boolean autodetectInterfaces = true;
 
+	// 指定每次getObject()调用使返回同一个代理对象还是新的.
+	// 通常应该为true,只有需要返回[有状态]的代理对象的情况下,
+	// 才会设置为false,如使用Introduction的场合.
 	private boolean singleton = true;
 
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
@@ -238,6 +264,12 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 
 
 	/**
+	 * 如果ProxyFactoryBean的singleton属性设置为true,则在第一次生成代理对象后,
+	 * 会通过ProxyFactoryBean内部的singletonInstance缓存生成的代理对象.
+	 * 之后所有请求都将返回这个缓存,从而满足singleton的语义.
+	 * 反之,若singleton属性设置为false,则每次都会重新检测各项设置,
+	 * 并为当前调用准备一套新的环境,然后再根据最新的环境数据,返回一个新代理对象,
+	 * 因此,性能上存在损失.
 	 * Return a proxy. Invoked when clients obtain beans from this factory bean.
 	 * Create an instance of the AOP proxy to be returned by this factory.
 	 * The instance will be cached for a singleton, and create on each call to
