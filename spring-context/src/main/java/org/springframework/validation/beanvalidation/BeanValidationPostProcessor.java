@@ -33,6 +33,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 默认不添加，需要手动添加。
+ * 主要提供对JSR-303验证的支持，内部有个boolean类型的属性afterInitialization，
+ * 默认是false。如果是false，在postProcessBeforeInitialization过程中对bean进行验证，
+ * 否则在postProcessAfterInitialization过程对bean进行验证。
+ * <p>
  * Simple {@link BeanPostProcessor} that checks JSR-303 constraint annotations
  * in Spring-managed beans, throwing an initialization exception in case of
  * constraint violations right before calling the bean's init method (if any).

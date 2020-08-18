@@ -109,6 +109,12 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
+	 * 在BeanFactory将属性应用到给定的bean之前,后置处理这些属性值.
+	 * 如果具体实现类提供了自定义的postProcessPropertyValues实现且想要被执行,
+	 * 那本接口函数应该返回null(默认).详见:AbstractAutowireCapableBeanFactory#populateBean(...)
+	 * 在未来的版本里,postProcessPropertyValues会被移除,
+	 * 且本接口函数的默认实现将会直接返回给定的pvs.
+	 * <p>
 	 * Post-process the given property values before the factory applies them
 	 * to the given bean, without any need for property descriptors.
 	 * <p>Implementations should return {@code null} (the default) if they provide a custom

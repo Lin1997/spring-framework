@@ -54,6 +54,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * 读取一个完成配置的Configuration类实例,根据其内容注册bean definition到给定的BeanDefinitionRegistry中.
+ * <p>
  * Reads a given fully-populated set of ConfigurationClass instances, registering bean
  * definitions with the given {@link BeanDefinitionRegistry} based on its contents.
  *

@@ -34,6 +34,9 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * 默认不添加，需要手动添加。
+ * 支持方法级别的JSR-303规范。需要在类上加上@Validated注解，
+ * 以及在方法的参数中加上验证注解，比如@Max，@Min，@NotEmpty等等.
  * A convenient {@link BeanPostProcessor} implementation that delegates to a
  * JSR-303 provider for performing method-level validation on annotated methods.
  *
@@ -110,7 +113,10 @@ public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvis
 
 	@Override
 	public void afterPropertiesSet() {
+		// 基于validatedAnnotationType属性构造出Pointcut，
+		// 这个validatedAnnotationType属性默认是@Validated注解类型，可以进行修改
 		Pointcut pointcut = new AnnotationMatchingPointcut(this.validatedAnnotationType, true);
+		// 基于Pointcut和Advice构造出Advisor
 		this.advisor = new DefaultPointcutAdvisor(pointcut, createMethodValidationAdvice(this.validator));
 	}
 

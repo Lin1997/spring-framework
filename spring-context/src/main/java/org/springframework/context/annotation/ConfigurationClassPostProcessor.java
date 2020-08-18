@@ -270,9 +270,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);	// 获取BeanDefinition
-			// beanDef已经确定是Full或Lite的Configuration,则无需执行流程.
-			// 关于Full或Lite Configuration:
-			// https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java-basic-concepts
+			// beanDef已经确定是Full或Lite的Configuration,说明已经解析过,则无需执行流程.
+			// 关于Full或Lite Configuration,见:
+			// ConfigurationClassUtils.isFullConfigurationClass(...)的注释.
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) ||
 					ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
 				if (logger.isDebugEnabled()) {
@@ -330,7 +330,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			parser.validate();
 
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());	// 去重
-			configClasses.removeAll(alreadyParsed);	// 排除以解析类
+			configClasses.removeAll(alreadyParsed);	// 排除已解析类
 
 			// Read the model and create bean definitions based on its content
 			if (this.reader == null) {
@@ -341,6 +341,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 
+			// 看看还有没有刚注册到容器,但还没有经过解析的Configuration类,有的话在此循环解析
 			candidates.clear();
 			if (registry.getBeanDefinitionCount() > candidateNames.length) {
 				String[] newCandidateNames = registry.getBeanDefinitionNames();
@@ -423,7 +424,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 							logger.trace(String.format("Replacing bean definition '%s' existing class '%s' with " +
 									"enhanced class '%s'", entry.getKey(), configClass.getName(), enhancedClass.getName()));
 						}
-						beanDef.setBeanClass(enhancedClass);	// BeanDefinition设为增强类
+						beanDef.setBeanClass(enhancedClass);	// 将BeanDefinition的Bean Class由目标类替换为增强类
 					}
 				}
 			}

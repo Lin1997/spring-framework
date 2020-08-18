@@ -75,6 +75,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * 默认不添加，使用@EnableScheduling注解后，会被注册到Spring容器中。
+ * 主要使用Spring Scheduling功能对bean中使用了@Scheduled注解的方法进行调度处理。
+ * 实现了BeanPostProcessor接口。
  * Bean post-processor that registers methods annotated with @{@link Scheduled}
  * to be invoked by a {@link org.springframework.scheduling.TaskScheduler} according
  * to the "fixedRate", "fixedDelay", or "cron" expression provided via the annotation.
@@ -351,24 +354,31 @@ public class ScheduledAnnotationBeanPostProcessor
 			return bean;
 		}
 
+		// 判断是否是代理类，如果是代理类，拿到真正的目标类
 		Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
+		// 判断是否已经处理过。nonAnnotatedClasses属性是个Class集合，
+		// 用于存储bean对应的class是否有@Scheduled注解的方法，如果没有，则添加到这个集合中
 		if (!this.nonAnnotatedClasses.contains(targetClass)) {
+			// 找出class中带有@Scheduled注解的方法
 			Map<Method, Set<Scheduled>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
 					(MethodIntrospector.MetadataLookup<Set<Scheduled>>) method -> {
 						Set<Scheduled> scheduledMethods = AnnotatedElementUtils.getMergedRepeatableAnnotations(
 								method, Scheduled.class, Schedules.class);
 						return (!scheduledMethods.isEmpty() ? scheduledMethods : null);
 					});
+			// 如果不存在@Scheduled注解的方法
 			if (annotatedMethods.isEmpty()) {
+				// 添加到nonAnnotatedClasses集合中。下次不用重复处理该类
 				this.nonAnnotatedClasses.add(targetClass);
 				if (logger.isTraceEnabled()) {
 					logger.trace("No @Scheduled annotations found on bean class: " + targetClass);
 				}
 			}
-			else {
+			else {	// 如果存在@Scheduled注解的方法
 				// Non-empty set of methods
+				// 遍历这些@Scheduled注解的方法
 				annotatedMethods.forEach((method, scheduledMethods) ->
-						scheduledMethods.forEach(scheduled -> processScheduled(scheduled, method, bean)));
+						scheduledMethods.forEach(scheduled -> processScheduled(scheduled, method, bean)));	// 进行调度处理
 				if (logger.isTraceEnabled()) {
 					logger.trace(annotatedMethods.size() + " @Scheduled methods processed on bean '" + beanName +
 							"': " + annotatedMethods);

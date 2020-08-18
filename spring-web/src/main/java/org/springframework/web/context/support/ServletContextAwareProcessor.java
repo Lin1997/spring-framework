@@ -26,6 +26,9 @@ import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 
 /**
+ * 默认不添加，如果Spring容器是个Web容器，那么会被添加。
+ * 比如GenericWebApplicationContext容器就在postProcessBeanFactory中添加了ServletContextAwareProcessor。
+ * postProcessBeanFactory方法是在Spring容器的refresh过程中被调用的。
  * {@link org.springframework.beans.factory.config.BeanPostProcessor}
  * implementation that passes the ServletContext to beans that implement
  * the {@link ServletContextAware} interface.

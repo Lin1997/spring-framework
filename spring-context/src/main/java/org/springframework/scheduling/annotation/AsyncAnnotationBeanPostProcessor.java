@@ -32,6 +32,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.function.SingletonSupplier;
 
 /**
+ * 默认不添加，使用@EnableAsync注解后，会被注册到Spring容器中。
+ * AsyncAnnotationBeanPostProcessor内部使用aop处理方法的调用。
  * Bean post-processor that automatically applies asynchronous invocation
  * behavior to any bean that carries the {@link Async} annotation at class or
  * method-level by adding a corresponding {@link AsyncAnnotationAdvisor} to the
@@ -146,6 +148,9 @@ public class AsyncAnnotationBeanPostProcessor extends AbstractBeanFactoryAwareAd
 	public void setBeanFactory(BeanFactory beanFactory) {
 		super.setBeanFactory(beanFactory);
 
+		// 构造一个AsyncAnnotationAdvisor.
+		// AsyncAnnotationAdvisor内部的Advice是AnnotationAsyncExecutionInterceptor，
+		// Pointcut会找出带有@Async的类和@Async的方法.
 		AsyncAnnotationAdvisor advisor = new AsyncAnnotationAdvisor(this.executor, this.exceptionHandler);
 		if (this.asyncAnnotationType != null) {
 			advisor.setAsyncAnnotationType(this.asyncAnnotationType);

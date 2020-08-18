@@ -239,10 +239,11 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 递归的处理指定的configuration class以及其子类
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
-			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
+			sourceClass = doProcessConfigurationClass(configClass, sourceClass);	// 若有子类,会返回子类,继续循环
 		}
 		while (sourceClass != null);
 

@@ -90,6 +90,7 @@ abstract class ConfigurationClassUtils {
 			return false;
 		}
 
+		// 获取bean对应class上的元数据注解元数据
 		AnnotationMetadata metadata;
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {

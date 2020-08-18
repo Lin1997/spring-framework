@@ -137,7 +137,7 @@ class ConfigurationClassEnhancer {
 		Class<?> subclass = enhancer.createClass();
 		// Registering callbacks statically (as opposed to thread-local)
 		// is critical for usage in an OSGi environment (SPR-5932)...
-		Enhancer.registerStaticCallbacks(subclass, CALLBACKS);
+		Enhancer.registerStaticCallbacks(subclass, CALLBACKS);	// 增强的逻辑在这个Callback类型的数组里
 		return subclass;
 	}
 

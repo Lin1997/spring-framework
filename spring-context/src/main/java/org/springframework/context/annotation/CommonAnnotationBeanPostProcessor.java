@@ -74,6 +74,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * 这个BeanPostProcessor用于处理一些常用(common)的注解,包括:
+ * PostConstruct,PreDestroy,Resource,WebServiceRef,EJB等.
+ * <p>
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
  * that supports common Java annotations out of the box, in particular the JSR-250
  * annotations in the {@code javax.annotation} package. These common Java
@@ -295,7 +298,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		super.postProcessMergedBeanDefinition(beanDefinition, beanType, beanName);
+		super.postProcessMergedBeanDefinition(beanDefinition, beanType, beanName);	// @PostConstruct的处理在父类
 		InjectionMetadata metadata = findResourceMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);
 	}
@@ -317,8 +320,9 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
-		InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);
+		InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);	// 找出bean中被@Resource注解修饰的属性(Field)和方法(Method)
 		try {
+			// 注入到bean中
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (Throwable ex) {
@@ -336,6 +340,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 
+	// 主要完成的是解析@Resource、@WebServiceRef、@EJB三个注解并缓存到injectionMetadataCache中
 	private InjectionMetadata findResourceMetadata(String beanName, final Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
@@ -348,7 +353,8 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
-					metadata = buildResourceMetadata(clazz);
+					// 将返回的metadata对象放入injectionMetadatCache缓存中，缓存key为beanName，供后续方法从缓存中取出
+					metadata = buildResourceMetadata(clazz);	// 判断属性/方法上是否有注解
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
 			}
@@ -363,6 +369,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			//判断属性上是否有注解
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				if (webServiceRefClass != null && field.isAnnotationPresent(webServiceRefClass)) {
 					if (Modifier.isStatic(field.getModifiers())) {
@@ -386,6 +393,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 				}
 			});
 
+			// 判断方法上是否有注解
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {

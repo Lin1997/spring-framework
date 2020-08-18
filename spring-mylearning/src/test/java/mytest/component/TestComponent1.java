@@ -5,13 +5,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestComponent1 {
+	@Autowired
 	TestComponent testComponent;
 
 	public TestComponent1() {
 
 	}
 
-	@Autowired
+	//@Autowired
 	public TestComponent1(TestComponent testComponent) {
 		this.testComponent = testComponent;
 	}

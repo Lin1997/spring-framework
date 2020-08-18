@@ -100,16 +100,21 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 	@Override
 	@Nullable
 	public Object invoke(final MethodInvocation invocation) throws Throwable {
+		// 得到方法的对应类
 		Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
+		// 得到方法
 		Method specificMethod = ClassUtils.getMostSpecificMethod(invocation.getMethod(), targetClass);
 		final Method userDeclaredMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 
+		// 得到Executor线程池。如果没有在Spring容器中找到TaskExecutor类型的线程池，
+		// 直接构造一个SimpleAsyncTaskExecutor.
 		AsyncTaskExecutor executor = determineAsyncExecutor(userDeclaredMethod);
 		if (executor == null) {
 			throw new IllegalStateException(
 					"No executor specified and no default executor set on AsyncExecutionInterceptor either");
 		}
 
+		// 把方法在调用封装到Callable中
 		Callable<Object> task = () -> {
 			try {
 				Object result = invocation.proceed();
@@ -126,6 +131,7 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 			return null;
 		};
 
+		// 提交任务
 		return doSubmit(task, executor, invocation.getMethod().getReturnType());
 	}
 

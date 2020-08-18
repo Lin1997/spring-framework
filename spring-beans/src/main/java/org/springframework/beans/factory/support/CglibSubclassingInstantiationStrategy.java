@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
  * 的动态字节码生成功能，该策略实现类可以动态生成某个类的子类，进而满足了方法注入所需的对象
  * 实例化需求.
  * 默认情况下，容器内部采用的是该接口 CglibSubclassingInstantiationStrategy.
- *
+ * <p>
  * Default object instantiation strategy for use in BeanFactories.
  *
  * <p>Uses CGLIB to generate subclasses dynamically if methods need to be

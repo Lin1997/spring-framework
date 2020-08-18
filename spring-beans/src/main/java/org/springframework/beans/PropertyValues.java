@@ -26,6 +26,10 @@ import java.util.stream.StreamSupport;
 import org.springframework.lang.Nullable;
 
 /**
+ * 保存一个或多个PropertyValue对象的容器.
+ * 这些属性通常来自于spring xml配置文件中,
+ * 详见:BeanDefinitionParserDelegate#parsePropertyElement(...).
+ * <p>
  * Holder containing one or more {@link PropertyValue} objects,
  * typically comprising one update for a specific target bean.
  *
