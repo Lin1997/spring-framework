@@ -445,6 +445,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		@Override
 		public PropertyValues postProcessProperties(@Nullable PropertyValues pvs, Object bean, String beanName) {
+			// 如果这是个增强过的Configuration类(Full模式的Configuration),
+			// 在这里先注入BeanFactory,用于后面AutowiredAnnotationBeanPostProcessor#postProcessProperties(...)
+			// 对其它Configuration Bean的自动注入.
 			// Inject the BeanFactory before AutowiredAnnotationBeanPostProcessor's
 			// postProcessProperties method attempts to autowire other configuration beans.
 			if (bean instanceof EnhancedConfiguration) {

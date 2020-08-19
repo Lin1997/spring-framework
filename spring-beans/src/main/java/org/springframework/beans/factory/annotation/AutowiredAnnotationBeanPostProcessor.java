@@ -422,20 +422,22 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		}
 	}
 
-
+	// 主要完成的是解析@Autowired、@Value以及@Inject等注解
+	// 并缓存到injectionMetadataCache中
 	private InjectionMetadata findAutowiringMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
 		// Quick check on the concurrent map first, with minimal locking.
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
-		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
+		if (InjectionMetadata.needsRefresh(metadata, clazz)) {	// 缓存有效
 			synchronized (this.injectionMetadataCache) {
 				metadata = this.injectionMetadataCache.get(cacheKey);
 				if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
-					metadata = buildAutowiringMetadata(clazz);
+					// 将返回的metadata对象放入injectionMetadataCache缓存中，缓存key为beanName，供后续方法从缓存中取出
+					metadata = buildAutowiringMetadata(clazz);	// 找出含有对应注解的属性/方法
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
 			}
@@ -443,6 +445,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		return metadata;
 	}
 
+	// 主要完成的是解析@Autowired、@Value注解
 	private InjectionMetadata buildAutowiringMetadata(final Class<?> clazz) {
 		List<InjectionMetadata.InjectedElement> elements = new ArrayList<>();
 		Class<?> targetClass = clazz;
@@ -450,6 +453,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			//判断属性上是否有注解
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				AnnotationAttributes ann = findAutowiredAnnotation(field);
 				if (ann != null) {
@@ -464,6 +468,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				}
 			});
 
+			// 判断方法上是否有注解
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -496,7 +501,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 		return new InjectionMetadata(clazz, elements);
 	}
-	// 用来获取Field, Method 和 Constructor上的@Autowired注解
+	// 用来获取Field, Method 和 Constructor上的@Autowired、@Value注解
 	@Nullable
 	private AnnotationAttributes findAutowiredAnnotation(AccessibleObject ao) {
 		if (ao.getAnnotations().length > 0) {  // autowiring annotations have to be local
@@ -590,7 +595,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			this.required = required;
 		}
 
-		// @Autowire基于Field的依赖注入
+		// 依赖注入
 		@Override
 		protected void inject(Object bean, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 			Field field = (Field) this.member;
@@ -599,13 +604,13 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 			}
 			else {
-				DependencyDescriptor desc = new DependencyDescriptor(field, this.required);
+				DependencyDescriptor desc = new DependencyDescriptor(field, this.required); // 描述即将被注入的依赖(a constructor parameter, a method parameter or a field)
 				desc.setContainingClass(bean.getClass());
 				Set<String> autowiredBeanNames = new LinkedHashSet<>(1);
 				Assert.state(beanFactory != null, "No BeanFactory available");
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
 				try {
-					// 获取依赖
+					// 获取依赖实例
 					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 				}
 				catch (BeansException ex) {

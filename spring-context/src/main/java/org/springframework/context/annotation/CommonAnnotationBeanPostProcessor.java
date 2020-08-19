@@ -319,6 +319,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 	@Override
+	// 处理@Resource注解,进行注入
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);	// 找出bean中被@Resource注解修饰的属性(Field)和方法(Method)
 		try {
@@ -340,21 +341,22 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 
-	// 主要完成的是解析@Resource、@WebServiceRef、@EJB三个注解并缓存到injectionMetadataCache中
+	// 主要完成的是解析@Resource,@WebServiceRef,@EJB等注解
+	// 并缓存到injectionMetadataCache中
 	private InjectionMetadata findResourceMetadata(String beanName, final Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
 		// Quick check on the concurrent map first, with minimal locking.
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
-		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
+		if (InjectionMetadata.needsRefresh(metadata, clazz)) {	// 缓存有效
 			synchronized (this.injectionMetadataCache) {
 				metadata = this.injectionMetadataCache.get(cacheKey);
 				if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
-					// 将返回的metadata对象放入injectionMetadatCache缓存中，缓存key为beanName，供后续方法从缓存中取出
-					metadata = buildResourceMetadata(clazz);	// 判断属性/方法上是否有注解
+					// 将返回的metadata对象放入injectionMetadataCache缓存中，缓存key为beanName，供后续方法从缓存中取出
+					metadata = buildResourceMetadata(clazz);	// 找出含有对应注解的属性/方法
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
 			}
@@ -362,6 +364,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		return metadata;
 	}
 
+	// 主要完成的是解析@Resource,@WebServiceRef,@EJB等注解
 	private InjectionMetadata buildResourceMetadata(final Class<?> clazz) {
 		List<InjectionMetadata.InjectedElement> elements = new ArrayList<>();
 		Class<?> targetClass = clazz;

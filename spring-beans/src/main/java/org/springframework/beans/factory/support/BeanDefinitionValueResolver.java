@@ -84,6 +84,8 @@ class BeanDefinitionValueResolver {
 
 
 	/**
+	 * 给定一个PropertyValue,解析成BeanFactory中的bean.
+	 * 可以理解为就是从容器中getBean
 	 * Given a PropertyValue, return a value, resolving any references to other
 	 * beans in the factory if necessary. The value could be:
 	 * <li>A BeanDefinition, which leads to the creation of a corresponding
@@ -107,7 +109,7 @@ class BeanDefinitionValueResolver {
 		// to another bean to be resolved.
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
-			return resolveReference(argName, ref);
+			return resolveReference(argName, ref);	// 在这里调用getBean(...)
 		}
 		else if (value instanceof RuntimeBeanNameReference) {
 			String refName = ((RuntimeBeanNameReference) value).getBeanName();

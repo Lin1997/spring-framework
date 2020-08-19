@@ -516,7 +516,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+			Object beanInstance = doCreateBean(beanName, mbdToUse, args);	// 创建
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
 			}
@@ -600,6 +600,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		try {
 			populateBean(beanName, mbd, instanceWrapper);	// 进行依赖注入
+			// 初始化给定的bean实例:
+			// 调用BeanFactory的一些回调(Aware接口)、init method、以及bean post processor回调
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -639,6 +641,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
+		// 如果bean实现了DisposableBean接口或定义了destroy method,
+		// 注册相关信息,在bean销毁时会进行回调,
 		// Register bean as disposable.
 		try {
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
@@ -1434,9 +1438,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
 					// 给InstantiationAwareBeanPostProcessor#postProcessProperties(...)一个机会,
 					// 在BeanFactory将属性应用到给定的bean之前,后置处理这些属性值(或者对bean进行一些处理).
-					// 这里有个非常有用的BeanPostProcessor: AutowiredAnnotationBeanPostProcessor,
-					// 它对采用 @Autowired、@Value、@Inject注解修饰的属性和方法进行注入.
-					// 处理@Autowired、@Value的注入
+					// 这里有些非常有用的BeanPostProcessor.
+					// AutowiredAnnotationBeanPostProcessor:
+					// 它对采用 @Autowired、@Value注解修饰的属性和方法进行注入.
+					// CommonAnnotationBeanPostProcessor:
+					// 处理 @Resource 注解的注入.
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {	// 由于postProcessPropertyValues已经Deprecated,所以前面一般不会返回null,进入处理这个即将弃用的接口回调
 						if (filteredPds == null) {
@@ -1697,16 +1703,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this, beanName, mbd, converter);
 
+		// 接下来,要解析每一个PropertyValue,转化为相应的对象
+		// 这个过程可以理解为: 将xml中的String,解析转化为Bean实例.
+
 		// Create a deep copy, resolving any references for values.
 		List<PropertyValue> deepCopy = new ArrayList<>(original.size());
 		boolean resolveNecessary = false;
-		for (PropertyValue pv : original) {
-			if (pv.isConverted()) {
+		for (PropertyValue pv : original) {	// 遍历PropertyValue列表
+			if (pv.isConverted()) {	// 如果当前PropertyValue已经转化过,直接添加到deepCopy
 				deepCopy.add(pv);
 			}
-			else {
-				String propertyName = pv.getName();
-				Object originalValue = pv.getValue();
+			else {	// 否则需要进行解析转化
+				String propertyName = pv.getName();		// 属性名
+				Object originalValue = pv.getValue();	// xml中的属性值,仍然是一个String
+				// 将originalValue解析成BeanFactory中的bean.可以理解为就是从容器中getBean(originalValue)
 				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
 				Object convertedValue = resolvedValue;
 				boolean convertible = bw.isWritableProperty(propertyName) &&
@@ -1738,6 +1748,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mpvs.setConverted();
 		}
 
+		// 最后,使用BeanWrapper提供的接口函数
+		// 将解析出来的依赖实例设置到bean中,详见BeanWrapper注释.
 		// Set our (possibly massaged) deep copy.
 		try {
 			bw.setPropertyValues(new MutablePropertyValues(deepCopy));
@@ -1767,6 +1779,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
+	 * 初始化给定的bean实例,调用BeanFactory的一些回调(Aware接口)、init method、以及bean post processor回调
+	 * <p>
 	 * Initialize the given bean instance, applying factory callbacks
 	 * as well as init methods and bean post processors.
 	 * <p>Called from {@link #createBean} for traditionally defined beans,
@@ -1791,15 +1805,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
-			invokeAwareMethods(beanName, bean);
+			invokeAwareMethods(beanName, bean);	// 回调BeanFactory的哪些*Aware接口
 		}
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			// 回调BeanPostProcessor#postProcessBeforeInitialization(...)
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			// 检查bean是否实现了InitializingBean或者自定义了init method,
+			// 如果有就在这里回调.
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1808,12 +1825,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			// 回调BeanPostProcessor#postProcessAfterInitialization(...)
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
 		return wrappedBean;
 	}
 
+	// 回调BeanFactory的哪些*Aware接口,如果bean实现了这些接口
 	private void invokeAwareMethods(String beanName, Object bean) {
 		if (bean instanceof Aware) {
 			if (bean instanceof BeanNameAware) {
@@ -1832,6 +1851,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 运行到这里bean的属性都设置完毕,本函数给bean一个机会响应这个阶段,
+	 * 并且也给bean一个机会来得知其所属的bean factory(this).
+	 * 具体地说,就是检查bean是否实现了InitializingBean或者自定义了init method,
+	 * 如果有就在这里回调.
 	 * Give a bean a chance to react now all its properties are set,
 	 * and a chance to know about its owning bean factory (this object).
 	 * This means checking whether the bean implements InitializingBean or defines
@@ -1846,7 +1869,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void invokeInitMethods(String beanName, Object bean, @Nullable RootBeanDefinition mbd)
 			throws Throwable {
 
-		boolean isInitializingBean = (bean instanceof InitializingBean);
+		boolean isInitializingBean = (bean instanceof InitializingBean);	// 实现了InitializingBean接口
 		if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Invoking afterPropertiesSet() on bean with name '" + beanName + "'");

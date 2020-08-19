@@ -263,7 +263,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 			if (nestedPa == this) {
 				pv.getOriginalPropertyValue().resolvedTokens = tokens;
 			}
-			nestedPa.setPropertyValue(tokens, pv);
+			nestedPa.setPropertyValue(tokens, pv);	// 使用BeanWrapper提供的接口函数进行依赖设置,详见BeanWrapper注释
 		}
 		else {
 			setPropertyValue(tokens, pv);

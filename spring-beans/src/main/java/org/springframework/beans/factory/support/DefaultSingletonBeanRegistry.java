@@ -129,6 +129,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 将bean添加到singletonObjects缓存中(也就是第一级缓存),
+	 * 并清除第二、三级缓存中当前beanName对应的缓存.
 	 * Add the given singleton object to the singleton cache of this factory.
 	 * <p>To be called for eager registration of singletons.
 	 * @param beanName the name of the bean
@@ -255,9 +257,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
-					afterSingletonCreation(beanName);
+					afterSingletonCreation(beanName);	// 取消标记单例Bean当前正在被创建
 				}
 				if (newSingleton) {
+					// 将bean添加到singletonObjects缓存中(也就是第一级缓存)
+					// 并清除第二、三级缓存中当前beanName对应的缓存.
 					addSingleton(beanName, singletonObject);
 				}
 			}

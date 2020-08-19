@@ -1732,6 +1732,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
+	 * 如果bean实现了DisposableBean接口或定义了destroy method,
+	 * 添加到BeanFactory的一个map中,
+	 * 在BeanFactory shutdown时销毁时会进行回调,
+	 * 详情可以看DisposableBean的注释.
 	 * Add the given bean to the list of disposable beans in this factory,
 	 * registering its DisposableBean interface and/or the given destroy method
 	 * to be called on factory shutdown (if applicable). Only applies to singletons.

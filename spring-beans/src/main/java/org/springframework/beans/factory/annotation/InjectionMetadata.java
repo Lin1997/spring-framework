@@ -87,7 +87,7 @@ public class InjectionMetadata {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Processing injected element of bean '" + beanName + "': " + element);
 				}
-				element.inject(target, beanName, pvs);
+				element.inject(target, beanName, pvs);	// 注入
 			}
 		}
 	}
@@ -174,6 +174,7 @@ public class InjectionMetadata {
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
 				throws Throwable {
 
+			// 通过反射进行注入
 			if (this.isField) {
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
